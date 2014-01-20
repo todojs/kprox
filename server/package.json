@@ -1,0 +1,12 @@
+{
+  "name": "kprox-srv",
+  "version": "0.0.1",
+  "description": "Server of kprox",
+  "scripts": {
+    "test": "kprox-srv.js"
+  },
+  "dependencies": {
+	  "socket.io": ">=0.9.0",
+      "expect.js": ">=0.2.0"
+	}
+}

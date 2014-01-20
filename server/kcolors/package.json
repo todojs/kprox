@@ -1,0 +1,7 @@
+{
+    "name": "kcolors",
+    "description": "get colors in node.js console",
+    "version": "0.1",
+    "author": "Pablo Almunia",
+    "main": "kcolors"
+}
