@@ -1,6 +1,15 @@
+//===================================================================
+//                        kprox-ui.js
+/**!
+ * @license Copyright 2014 - KUBIDE ADVANCE WEB DEVELOPMENT, S.L.
+ * @fileoverview    kprox-ui.js KProx client for HTML Form
+ * @author          Pablo Almunia
+ * @version         0.1
+ */
+//===================================================================
 /**
  * kproxui
- * Synchronize the HTML interface with other user open the same page.
+ * Synchronize the HTML Form with other user open the same page.
  * expose kproxui - object
  * expose KProx - class
  */
@@ -1046,7 +1055,6 @@ var userMark = (function () {
 /* jshint browser: true, node: true, devel: true */
 /* global dom: true, obj: true, Scope: true, io: true    */
 /* exported kprox */
-
 
 /**
  * Created by palmun on 4/11/13.

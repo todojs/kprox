@@ -1,13 +1,13 @@
 /* jshint strict: true, node: true */
-//==========================================================
+//===================================================================
 //                        kproxsrv.js
 /**!
- * @license   Copyright 2013 - Thesys Management Consulting, S.L.
+ * @license Copyright 2014 - KUBIDE ADVANCE WEB DEVELOPMENT, S.L.
  * @fileoverview	kproxsrv.js	KProx server
- * @author	Pablo Almunia
- * @version   1.0
+ * @author          Pablo Almunia
+ * @version         0.1
  */
-//==========================================================
+//===================================================================
 "use strict";
 
 //----------------------------------------------------------

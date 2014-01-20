@@ -1,8 +1,15 @@
 /* jshint browser: true, node: true, devel: true */
 /* global dom: true, obj: true, Scope: true, io: true    */
 /* exported kprox */
-
-
+//===================================================================
+//                        kprox.js
+/**!
+ * @license Copyright 2014 - KUBIDE ADVANCE WEB DEVELOPMENT, S.L.
+ * @fileoverview    kprox.js KProx client
+ * @author          Pablo Almunia
+ * @version         0.1
+ */
+//===================================================================
 var KProx;
 
 
