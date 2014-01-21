@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Example of KROX-UI with a simple FORM</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="../src/socket.io/socket.io.min.js"></script>
+    <script type="text/javascript" src="/src/kprox-ui.js"></script>
+</head>
+<body>
+<h1>KPROX-UI with a simple FORM</h1>
+<form kprox-sync>
+    <table>
+        <tr>
+            <td>textarea</td>
+            <td>
+                <textarea id="textawson"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>radio button</td>
+            <td><input type="radio" name="radio" value="1" id="radio1"/></td>
+            <td><input type="radio" name="radio" value="2" id="radio2"/></td>
+        </tr>
+        <tr>
+            <td>radio button</td>
+            <td><input type="radio" name="otherradio" value="1" value="1" id="radio3"/></td>
+        </tr>
+        <tr>
+            <td>combo</td>
+            <td>
+                <select id="select">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>list</td>
+            <td>
+                <select id="select2" size="4">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                    <option value="mercedes">Mercedes</option>
+                    <option value="audi">Audi</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>list</td>
+            <td>
+                <select id="select3" size="4" multiple="true">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                    <option value="mercedes">Mercedes</option>
+                    <option value="audi">Audi</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>text</td>
+            <td><input type="text" name="text" kprox-model="base" id="text"/></td>
+        </tr>
+        <tr>
+            <td>search</td>
+            <td><input type="search" name="search" id="search"/></td>
+        </tr>
+        <tr>
+            <td>url</td>
+            <td><input type="url" name="url" id="url"/></td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td><input type="email" name="email" id="email"/></td>
+        </tr>
+        <tr>
+            <td>password</td>
+            <td><input type="password" name="password" id="password"/></td>
+        </tr>
+        <tr>
+            <td>date</td>
+            <td><input type="date" name="date" id="date"/></td>
+        </tr>
+        <tr>
+            <td>month</td>
+            <td><input type="month" name="month" id="month"/></td>
+        </tr>
+        <tr>
+            <td>week</td>
+            <td><input type="week" name="week" id="week"/></td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td><input type="email" name="time" id="time"></td>
+        </tr>
+        <tr>
+            <td>datetimelocal</td>
+            <td><input type="datetimelocal" name="datetimelocal" id="datetimelocal"/></td>
+        </tr>
+        <tr>
+            <td>number</td>
+            <td><input type="number" name="number" id="number"/></td>
+        </tr>
+        <tr>
+            <td>range</td>
+            <td><input type="range" name="range" id="range" value="50"/></td>
+        </tr>
+        <tr>
+            <td>color</td>
+            <td><input type="color" name="color" id="color"/></td>
+        </tr>
+        <tr>
+            <td>checkbox</td>
+            <td><input type="checkbox" name="checkbox" id="checkbox"/></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>
