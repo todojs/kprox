@@ -104,7 +104,8 @@ var is = (function() {
         if (/*value.nodeType === 1 && */length) {
             return true;
         }
-        return isArray(value) || !isFunction(value) && (length === 0 || typeof length === "number" && length > 0 && (length - 1) in value);
+        return  isArray(value) || !isFunction(value) &&
+                (length === 0 || typeof length === "number" && length > 0 && (length - 1) in value);
     }
 
     /**
@@ -189,7 +190,11 @@ var is = (function() {
         return (
             typeof HTMLElement === "object" ?
                 value instanceof HTMLElement :
-                value && typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string"
+                value &&
+                    typeof value === "object" &&
+                    value !== null &&
+                    value.nodeType === 1 &&
+                    typeof value.nodeName === "string"
             );
     }
 
@@ -326,7 +331,9 @@ var obj = (function() {
         if (typeof path === 'undefined') {
             path = '';
         }
-        if (typeof origin !== typeof target || Object.prototype.toString.call(origin) !== Object.prototype.toString.call(target)) {
+        if (typeof origin !== typeof target ||
+            Object.prototype.toString.call(origin) !== Object.prototype.toString.call(target))
+        {
             if (typeof origin === 'undefined') {
                 diff.push({'event': 'add', 'key': normalizeName(path), 'prv': origin, 'lst': target});
             } else if (typeof target === 'undefined') {
@@ -357,7 +364,8 @@ var obj = (function() {
                 }
                 for (key in target) {
                     if (!(key in origin)) {
-                        diff.push({'event': 'add', 'key': normalizeName(path ? path + '.' + key : key), 'prv': origin[key], 'lst': target[key]});
+                        diff.push({'event': 'add', 'key': normalizeName(path ? path + '.' + key : key),
+                            'prv': origin[key], 'lst': target[key]});
                     }
                 }
                 /* jshint forin: true */
@@ -397,7 +405,8 @@ var obj = (function() {
     }
 
     /**
-     * Normalize a deep object reference and convert dot notation to array notation when some reference has an invalid name
+     * Normalize a deep object reference and convert dot notation to array notation when some reference has an
+     * invalid name
      * @name obj.normalizeName
      * @method
      * @param {string} path - deep object reference
@@ -910,7 +919,10 @@ var dom = (function () {
                 });
 
             // IE10 and IE11 with type=range
-            } else if ((document.documentMode === 10 ||document.documentMode === 11) && element.getAttribute('type') === 'range') {
+            } else if ((document.documentMode === 10 ||
+                        document.documentMode === 11) &&
+                        element.getAttribute('type') === 'range')
+            {
                 element.addEventListener('change', fnCallback);
 
             // All elements
@@ -1043,11 +1055,11 @@ var dom = (function () {
     };
 })();
 
+
     // Configuration variable
     var kproxconfig = kproxconfig || {};
-    kproxconfig.server = kproxconfig.server || 'localhost';
+    kproxconfig.server = kproxconfig.server || (window ? window.location.hostname : false) || 'localhost';
     kproxconfig.port = kproxconfig.port || 3000;
-
 
     // Errors
     var ERROR_record_locked_by_you = -1,
@@ -1093,7 +1105,8 @@ var dom = (function () {
      */
     //=========================================================================
     function disconnected(problem) {
-        Object.defineProperty(kproxObject, 'connected', { value: false, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'connected',
+            { value: false, writable: false, enumerable: true, configurable: true });
         fire('disconnect', problem);
     }
     // End of unready()
@@ -1102,7 +1115,8 @@ var dom = (function () {
      * configure the ready state and launch the 'ready' event handlers
      */
     function connected() {
-        Object.defineProperty(kproxObject, 'connected', { value: true, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'connected',
+            { value: true, writable: false, enumerable: true, configurable: true });
         fire('connect');
     }
     // End of ready()
@@ -1111,7 +1125,8 @@ var dom = (function () {
      * configure the ready state and launch the 'ready' event handlers
      */
     function ready() {
-        Object.defineProperty(kproxObject, 'ready', { value: true, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'ready',
+            { value: true, writable: false, enumerable: true, configurable: true });
         fire('ready');
     }
     // End of ready()
@@ -1121,14 +1136,8 @@ var dom = (function () {
      */
     function connect() {
 
-//        //TODO: gestionar el nombre del servidor al que nos queremos conectar
-//        var serverPath = {hostname: 'localhost'};
-//        if (typeof window !== 'undefined') {
-//            serverPath = dom.getLocation(document.querySelector('script[src*="socket.io.min.js"]').getAttribute('src'));
-//        }
-//        kproxsrv = io.connect('http://' + serverPath.hostname + ':' + 3000, {'force new connection': true});
-
-        kproxsrv = socketio.connect(server || ('http://' + kproxconfig.server + ':' + kproxconfig.port), {'flash policy port': 3000, 'force new connection': true});
+        kproxsrv = socketio.connect(server || ('http://' + kproxconfig.server + ':' + kproxconfig.port),
+            {'flash policy port': 3000, 'force new connection': true});
 
         kproxsrv.on('connect', function(){
             // fire connected
@@ -1193,10 +1202,12 @@ var dom = (function () {
     var kproxObject = {};
 
     // kprox.ready
-    Object.defineProperty(kproxObject, 'ready', { value: false, writable: false, enumerable: true, configurable: true });
+    Object.defineProperty(kproxObject, 'ready',
+        {value: false, writable: false, enumerable: true, configurable: true});
 
     // kprox.connected
-    Object.defineProperty(kproxObject, 'connected', { value: false, writable: false, enumerable: true, configurable: true });
+    Object.defineProperty(kproxObject, 'connected',
+        {value: false, writable: false, enumerable: true, configurable: true});
 
     // kprox.docs
     Object.defineProperty(kproxObject, 'docs', { get: function () {
@@ -1420,7 +1431,8 @@ var dom = (function () {
                 delete kproxObject[p];
             }
         }
-        Object.defineProperty(kproxObject, 'ready', { value: false, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'ready',
+            { value: false, writable: false, enumerable: true, configurable: true });
     }
 
     //=========================================================================

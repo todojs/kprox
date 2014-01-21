@@ -38,9 +38,6 @@ console.log('KPROXSRV - '.magenta + 'starting'.green);
 // Modules
 //----------------------------------------------------------
 
-// assert module
-var assert = require('assert');
-
 // http server
 var app = require('http').createServer();
 
@@ -139,12 +136,18 @@ console.log('KPROXSRV - '.magenta + 'ready on port '.green + '%s', 3000);
 
 
 //production settings
-io.enable('browser client minification');  // send minified client
-io.enable('browser client etag');          // apply etag caching logic based on version number
-io.enable('browser client gzip');          // gzip the file
-io.set('log level', 1);                              // reduce logging
-io.set('flash policy port', 3000);       //override policy port
-io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']); // enable all transports (optional if you want flashsocket)
+// send minified client
+io.enable('browser client minification');
+// apply etag caching logic based on version number
+io.enable('browser client etag');
+// gzip the file
+io.enable('browser client gzip');
+// reduce logging
+io.set('log level', 1);
+//override policy port
+io.set('flash policy port', 3000);
+// enable all transports (optional if you want flashsocket)
+io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']);
 
 //----------------------------------------------------------
 // Socket.io Configuration
@@ -191,7 +194,8 @@ io.sockets.on('connection', function connection(socket) {
      * @returns {boolean}
      */
     function isLockable(doc, key, card, options, fnCallback) {
-        console.log('KPROXSRV - '.magenta + socket.id + ' - check lock'.bluelight + ' - %s.%s = '.green + ' by '.redlight + '%j'.red, doc, key, card);
+        console.log('KPROXSRV - '.magenta + socket.id + ' - check lock'.bluelight + ' - %s.%s = '.green +
+            ' by '.redlight + '%j'.red, doc, key, card);
         // check if this key exist
         if (typeof getDepth(database[doc], key) === 'undefined') {
             if (options && !options.noexist) {
@@ -203,11 +207,13 @@ io.sockets.on('connection', function connection(socket) {
         if (typeof locks[doc] !== 'undefined' && typeof locks[doc][key] !== 'undefined') {
             if (locks[doc][key].id === socket.id) {
                 if (options && !options.nomy) {
-                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked_by_you, msg: ERROR_record_locked_for_by_msg, card: locks[doc][key].card});
+                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked_by_you,
+                        msg: ERROR_record_locked_for_by_msg, card: locks[doc][key].card});
                     return false;
                 }
             } else {
-                sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked, msg: ERROR_record_locked_msg, card: locks[doc][key].card});
+                sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked, msg: ERROR_record_locked_msg,
+                    card: locks[doc][key].card});
                 return false;
             }
         }
@@ -222,11 +228,13 @@ io.sockets.on('connection', function connection(socket) {
                 regLock = new RegExp('^' + locked.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + '(\\.|$])');
                 parent = key.match(regLock);
                 if (parent !== null && locks[doc][locked].id !== socket.id) {
-                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_parent_record_locked, msg: ERROR_parent_record_locked_msg, card: locks[doc][locked].card});
+                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_parent_record_locked,
+                        msg: ERROR_parent_record_locked_msg, card: locks[doc][locked].card});
                     return false;
                 }
                 if (child !== null && locks[doc][locked].id !== socket.id) {
-                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_child_record_locked, msg: ERROR_child_record_locked_msg, card: locks[doc][locked].card});
+                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_child_record_locked,
+                        msg: ERROR_child_record_locked_msg, card: locks[doc][locked].card});
                     return false;
                 }
             }
@@ -248,13 +256,16 @@ io.sockets.on('connection', function connection(socket) {
                     if (locks[doc].hasOwnProperty(key)) {
                         if (locks[doc][key].id === socket.id) {
                             delete locks[doc][key];
-                            console.log('KPROXSRV - '.magenta + socket.id + ' - unlocked'.bluelight + ' - %s.%s'.green, doc, key);
+                            console.log('KPROXSRV - '.magenta + socket.id + ' - unlocked'.bluelight +
+                                ' - %s.%s'.green, doc, key);
+                            socket.broadcast.to(doc).emit('unlock', doc, key);
                         }
                     }
                 }
                 socket.leave(doc);
                 if (io.sockets.clients(doc).length === 0) {
-                    console.log('KPROXSRV - '.magenta + socket.id + ' - delete document'.bluelight  + ' - %s'.green, doc);
+                    console.log('KPROXSRV - '.magenta + socket.id + ' - delete document'.bluelight  +
+                        ' - %s'.green, doc);
                     delete database[doc];
                 }
             }
@@ -266,12 +277,19 @@ io.sockets.on('connection', function connection(socket) {
     // Open new document
     //=========================
     socket.on('open', function open(doc, data, card, fnCallback) {
-        console.log('KPROXSRV - '.magenta + socket.id + ' - open'.bluelight + ' - %s = '.green + '%j'.grey + ' by '.redlight + '%j'.red, doc, data, card);
+        console.log('KPROXSRV - '.magenta + socket.id + ' - open'.bluelight + ' - %s = '.green + '%j'.grey +
+            ' by '.redlight + '%j'.red, doc, data, card);
         if (typeof database[doc] === 'undefined') {
-            console.log('KPROXSRV - '.magenta + socket.id + ' - create document'.bluelight  + ' - %s ='.green + ' %j'.grey, doc, data);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - create document'.bluelight  + ' - %s ='.green +
+                ' %j'.grey, doc, data);
             database[doc] = data;
         }
         fnCallback(database[doc]);
+        for (var key in locks[doc]) {
+            if (locks[doc].hasOwnProperty(key)) {
+                socket.emit('lock', doc, key, locks[doc][key].card);
+            }
+        }
         socket.join(doc);
         socket.set('card', card);
         socket.broadcast.to(doc).emit('open', doc, card);
@@ -281,7 +299,8 @@ io.sockets.on('connection', function connection(socket) {
     // Close a document
     //=========================
     socket.on('close', function open(doc, card) {
-        console.log('KPROXSRV - '.magenta + socket.id + ' - close'.bluelight + ' - '.green + ' by '.redlight + '%j'.red, doc, card);
+        console.log('KPROXSRV - '.magenta + socket.id + ' - close'.bluelight + ' - '.green + ' by '.redlight +
+            '%j'.red, doc, card);
         socket.leave(doc);
         if (io.sockets.clients(doc).length === 0) {
             console.log('KPROXSRV - '.magenta + socket.id + ' - delete - '.bluelight  + '%s'.green, doc);
@@ -293,24 +312,18 @@ io.sockets.on('connection', function connection(socket) {
     // add an element
     //=========================
     socket.on('add', function add(doc, key, data) {
-        // Check prev data
-//        try {
-//            assert.deepEql(getDepth(database[doc], key), data.prev);
-//        } catch(e) {
-//            console.log('KPROXSRV - '.magenta + socket.id + ' - add'.bluelight + ' - record changed previosly'.red + ' - %s.%s'.green, doc, key);
-//            socket.emit('msgerror', doc, key, {error: ERROR_record_changed_previosly, msg: ERROR_record_changed_previosly_msg});
-//            return;
-//        }
         key = normalizeKey(key);
         socket.get('card', function(err, card) {
             // Check lock status
             if (!isLockable(doc, key, card, {noexist: true})) {
-                console.log('KPROXSRV - '.magenta + socket.id + ' - del'.bluelight + ' - %s.%s = '.green + '%j'.grey, doc, key, data);
+                console.log('KPROXSRV - '.magenta + socket.id + ' - del'.bluelight + ' - %s.%s = '.green +
+                    '%j'.grey, doc, key, data);
                 socket.emit('del', doc, key, 'me');
                 return;
             }
             // Update
-            console.log('KPROXSRV - '.magenta + socket.id + ' - add'.bluelight + ' - %s.%s = '.green + '%j'.grey + ' by '.redlight + '%j'.red, doc, key, data, card);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - add'.bluelight + ' - %s.%s = '.green + '%j'.grey +
+                ' by '.redlight + '%j'.red, doc, key, data, card);
             setDepth(database[doc], key, data);
             socket.broadcast.to(doc).emit('edt', doc, key, data, card);
         });
@@ -320,23 +333,17 @@ io.sockets.on('connection', function connection(socket) {
     // edit an element
     //=========================
     socket.on('edt', function edt(doc, key, data) {
-        // Check prev data
-//        try {
-//            assert.deepEql(getDepth(database[doc], key), data.prev);
-//        } catch(e) {
-//            console.log('KPROXSRV - '.magenta + socket.id + ' - edt'.bluelight + ' - record changed previosly'.red + ' - %s.%s'.green, doc, key);
-//            socket.emit('msgerror', doc, key, {error: ERROR_record_changed_previosly, msg: ERROR_record_changed_previosly_msg});
-//            return;
-//        }
         key = normalizeKey(key);
         socket.get('card', function(err, card) {
             // Check lock status
             if (!isLockable(doc, key, card)) {
-                console.log('KPROXSRV - '.magenta + socket.id + ' - edt'.bluelight + ' - %s.%s = '.green + '%j'.grey, doc, key, data);
+                console.log('KPROXSRV - '.magenta + socket.id + ' - edt'.bluelight + ' - %s.%s = '.green + '%j'.grey,
+                    doc, key, data);
                 socket.emit('edt', doc, key, getDepth(database[doc], key), 'me');
                 return;
             }
-            console.log('KPROXSRV - '.magenta + socket.id + ' - edt'.bluelight + ' - %s.%s = '.green + '%j'.grey + ' by '.redlight + '%j'.red, doc, key, data, card);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - edt'.bluelight + ' - %s.%s = '.green + '%j'.grey +
+                ' by '.redlight + '%j'.red, doc, key, data, card);
             setDepth(database[doc], key, data);
             socket.broadcast.to(doc).emit('edt', doc, key, data, card);
         });
@@ -346,13 +353,6 @@ io.sockets.on('connection', function connection(socket) {
     // delete an element
     //=========================
     socket.on('del', function del(doc, key, data) {
-        // Check prev data
-//        try {
-//            assert.deepEql(getDepth(database[doc], key), data.prev);
-//        } catch(e) {
-//            socket.emit('msgerror', doc, key, {error: ERROR_record_changed_previosly, msg: ERROR_record_changed_previosly_msg});
-//            return;
-//        }
         key = normalizeKey(key);
         socket.get('card', function(err, card) {
             // Check lock status
@@ -360,7 +360,8 @@ io.sockets.on('connection', function connection(socket) {
                 socket.emit('add', doc, key, getDepth(database[doc], key), 'me');
                 return;
             }
-            console.log('KPROXSRV - '.magenta + socket.id + ' - del'.bluelight + ' - %s.%s = '.green + '%j'.grey + ' by '.redlight + '%j'.red, doc, key, getDepth(database[doc], key), card);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - del'.bluelight + ' - %s.%s = '.green + '%j'.grey +
+                ' by '.redlight + '%j'.red, doc, key, getDepth(database[doc], key), card);
             delDepth(database[doc], key);
             unlock(doc, key);
             socket.broadcast.to(doc).emit('del', doc, key, card);
@@ -384,7 +385,8 @@ io.sockets.on('connection', function connection(socket) {
             locks[doc][key].id = socket.id ;
             locks[doc][key].card = card;
             if (fnCallback) { fnCallback(null); }
-            console.log('KPROXSRV - '.magenta + socket.id + ' - locked'.bluelight + ' - %s.%s = '.green + ' by '.redlight + '%j'.red, doc, key, card);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - locked'.bluelight + ' - %s.%s = '.green +
+                ' by '.redlight + '%j'.red, doc, key, card);
             socket.broadcast.to(doc).emit('lock', doc, key, card);
         });
     });
@@ -396,21 +398,25 @@ io.sockets.on('connection', function connection(socket) {
     function unlock(doc, key, fnCallback) {
         key = normalizeKey(key);
         socket.get('card', function(err, card) {
-            console.log('KPROXSRV - '.magenta + socket.id + ' - unlocking'.bluelight + ' - %s.%s = '.green + ' by '.redlight + '%j'.red, doc, key, card);
+            console.log('KPROXSRV - '.magenta + socket.id + ' - unlocking'.bluelight + ' - %s.%s = '.green +
+                ' by '.redlight + '%j'.red, doc, key, card);
             if (locks[doc]) {
                 if (locks[doc][key]) {
                     if (locks[doc][key].id === socket.id) {
                         delete locks[doc][key];
-                        console.log('KPROXSRV - '.magenta + socket.id + ' - unlocked'.bluelight + ' - %s.%s = '.green + ' by '.redlight + '%j'.red, doc, key, card);
+                        console.log('KPROXSRV - '.magenta + socket.id + ' - unlocked'.bluelight + ' - %s.%s = '.green +
+                            ' by '.redlight + '%j'.red, doc, key, card);
                         if (fnCallback) { fnCallback(null); }
                         socket.broadcast.to(doc).emit('unlock', doc, key, card);
                         return;
                     } else {
-                        sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked, msg: ERROR_record_locked_msg, card: locks[doc][key].card});
+                        sendError(fnCallback, {doc: doc, key: key, num: ERROR_record_locked,
+                            msg: ERROR_record_locked_msg, card: locks[doc][key].card});
                         return;
                     }
                 } else {
-                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_key_not_locked, msg: ERROR_key_not_exist_msg});
+                    sendError(fnCallback, {doc: doc, key: key, num: ERROR_key_not_locked,
+                        msg: ERROR_key_not_exist_msg});
                     return;
                 }
             }

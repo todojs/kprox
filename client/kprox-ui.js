@@ -93,7 +93,8 @@ var is = (function() {
         if (/*value.nodeType === 1 && */length) {
             return true;
         }
-        return isArray(value) || !isFunction(value) && (length === 0 || typeof length === "number" && length > 0 && (length - 1) in value);
+        return  isArray(value) || !isFunction(value) &&
+                (length === 0 || typeof length === "number" && length > 0 && (length - 1) in value);
     }
 
     /**
@@ -178,7 +179,11 @@ var is = (function() {
         return (
             typeof HTMLElement === "object" ?
                 value instanceof HTMLElement :
-                value && typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string"
+                value &&
+                    typeof value === "object" &&
+                    value !== null &&
+                    value.nodeType === 1 &&
+                    typeof value.nodeName === "string"
             );
     }
 
@@ -511,7 +516,10 @@ var dom = (function () {
                 });
 
             // IE10 and IE11 with type=range
-            } else if ((document.documentMode === 10 ||document.documentMode === 11) && element.getAttribute('type') === 'range') {
+            } else if ((document.documentMode === 10 ||
+                        document.documentMode === 11) &&
+                        element.getAttribute('type') === 'range')
+            {
                 element.addEventListener('change', fnCallback);
 
             // All elements
@@ -757,7 +765,9 @@ var obj = (function() {
         if (typeof path === 'undefined') {
             path = '';
         }
-        if (typeof origin !== typeof target || Object.prototype.toString.call(origin) !== Object.prototype.toString.call(target)) {
+        if (typeof origin !== typeof target ||
+            Object.prototype.toString.call(origin) !== Object.prototype.toString.call(target))
+        {
             if (typeof origin === 'undefined') {
                 diff.push({'event': 'add', 'key': normalizeName(path), 'prv': origin, 'lst': target});
             } else if (typeof target === 'undefined') {
@@ -788,7 +798,8 @@ var obj = (function() {
                 }
                 for (key in target) {
                     if (!(key in origin)) {
-                        diff.push({'event': 'add', 'key': normalizeName(path ? path + '.' + key : key), 'prv': origin[key], 'lst': target[key]});
+                        diff.push({'event': 'add', 'key': normalizeName(path ? path + '.' + key : key),
+                            'prv': origin[key], 'lst': target[key]});
                     }
                 }
                 /* jshint forin: true */
@@ -828,7 +839,8 @@ var obj = (function() {
     }
 
     /**
-     * Normalize a deep object reference and convert dot notation to array notation when some reference has an invalid name
+     * Normalize a deep object reference and convert dot notation to array notation when some reference has an
+     * invalid name
      * @name obj.normalizeName
      * @method
      * @param {string} path - deep object reference
@@ -998,10 +1010,14 @@ var userMark = (function () {
             var width = parseInt(boxElement.width, 10) + 4;
             dom.append(overlay,
                 '<div id="mark' + (++num) + '">' +
-                    '<div class="top"    style="position: absolute; top: ' + top + 'px; left: ' + left + 'px; height: 0; width: ' + width + 'px; border-bottom: 1px solid red;"></div>' +
-                    '<div class="right"  style="position: absolute; top: ' + top + 'px; left: ' + (left + width) + 'px; height: ' + height + 'px; width: 0; border-left: 1px solid red;"></div>' +
-                    '<div class="bottom" style="position: absolute; top: ' + (top + height) + 'px; left: ' + left + 'px; height: 0; width: ' + width + 'px; border-top: 1px solid red;"></div>' +
-                    '<div class="left"   style="position: absolute; top: ' + top + 'px; left: ' + left + 'px; height: ' + height + 'px; width: 0; border-right: 1px solid red;"></div>' +
+                    '<div class="top"    style="position: absolute; top: ' + top + 'px; left: ' + left + 'px; height: 0; width: ' + width +
+                        'px; border-bottom: 1px solid red;"></div>' +
+                    '<div class="right"  style="position: absolute; top: ' + top + 'px; left: ' + (left + width) +
+                        'px; height: ' + height + 'px; width: 0; border-left: 1px solid red;"></div>' +
+                    '<div class="bottom" style="position: absolute; top: ' + (top + height) + 'px; left: ' + left +
+                        'px; height: 0; width: ' + width + 'px; border-top: 1px solid red;"></div>' +
+                    '<div class="left"   style="position: absolute; top: ' + top + 'px; left: ' + left +
+                        'px; height: ' + height + 'px; width: 0; border-right: 1px solid red;"></div>' +
                     '</div>');
             marks[selector] = {
                 element: element,
@@ -1011,7 +1027,6 @@ var userMark = (function () {
                 bottom: document.querySelector('#mark' + num + ' .top' ),
                 right: document.querySelector('#mark' + num + ' .top' )
             };
-            console.dir(marks[selector]);
             return true;
         },
         /**
@@ -1030,7 +1045,7 @@ var userMark = (function () {
                 element = selector;
                 selector = '#' + element.getAttribute('id');
             }
-            var mark = marks[selector].mark;
+            var mark = marks[selector] && marks[selector].mark;
             if (!mark) {
                 return false;
             }
@@ -1044,13 +1059,13 @@ var userMark = (function () {
 // Start closure for internal elements
 (function () {
 
-    /* global KProx: false, obj: true, is: true, dom: true, Scope: true, userMark: true */
+/* global KProx: false, obj: true, is: true, dom: true, Scope: true, userMark: true */
 
-    'use strict';
+'use strict';
 
-    // Private
-    var kprox;              // KProx instance
-    var model;
+// Private
+var kprox;              // KProx instance
+var model;
 
 /* jshint browser: true, node: true, devel: true */
 /* global dom: true, obj: true, Scope: true, io: true    */
@@ -1189,6 +1204,11 @@ KProx = function (server, card, fnReady) {
     "use strict";
 
 
+    // Configuration variable
+    var kproxconfig = kproxconfig || {};
+    kproxconfig.server = kproxconfig.server || (window ? window.location.hostname : false) || 'localhost';
+    kproxconfig.port = kproxconfig.port || 3000;
+
     // Errors
     var ERROR_record_locked_by_you = -1,
         ERROR_record_locked = -2,
@@ -1233,7 +1253,8 @@ KProx = function (server, card, fnReady) {
      */
     //=========================================================================
     function disconnected(problem) {
-        Object.defineProperty(kproxObject, 'connected', { value: false, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'connected',
+            { value: false, writable: false, enumerable: true, configurable: true });
         fire('disconnect', problem);
     }
     // End of unready()
@@ -1242,7 +1263,8 @@ KProx = function (server, card, fnReady) {
      * configure the ready state and launch the 'ready' event handlers
      */
     function connected() {
-        Object.defineProperty(kproxObject, 'connected', { value: true, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'connected',
+            { value: true, writable: false, enumerable: true, configurable: true });
         fire('connect');
     }
     // End of ready()
@@ -1251,7 +1273,8 @@ KProx = function (server, card, fnReady) {
      * configure the ready state and launch the 'ready' event handlers
      */
     function ready() {
-        Object.defineProperty(kproxObject, 'ready', { value: true, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'ready',
+            { value: true, writable: false, enumerable: true, configurable: true });
         fire('ready');
     }
     // End of ready()
@@ -1261,14 +1284,8 @@ KProx = function (server, card, fnReady) {
      */
     function connect() {
 
-//        //TODO: gestionar el nombre del servidor al que nos queremos conectar
-//        var serverPath = {hostname: 'localhost'};
-//        if (typeof window !== 'undefined') {
-//            serverPath = dom.getLocation(document.querySelector('script[src*="socket.io.min.js"]').getAttribute('src'));
-//        }
-//        kproxsrv = io.connect('http://' + serverPath.hostname + ':' + 3000, {'force new connection': true});
-
-        kproxsrv = socketio.connect(server || ('http://' + kproxconfig.server + ':' + kproxconfig.port), {'flash policy port': 3000, 'force new connection': true});
+        kproxsrv = socketio.connect(server || ('http://' + kproxconfig.server + ':' + kproxconfig.port),
+            {'flash policy port': 3000, 'force new connection': true});
 
         kproxsrv.on('connect', function(){
             // fire connected
@@ -1333,10 +1350,12 @@ KProx = function (server, card, fnReady) {
     var kproxObject = {};
 
     // kprox.ready
-    Object.defineProperty(kproxObject, 'ready', { value: false, writable: false, enumerable: true, configurable: true });
+    Object.defineProperty(kproxObject, 'ready',
+        {value: false, writable: false, enumerable: true, configurable: true});
 
     // kprox.connected
-    Object.defineProperty(kproxObject, 'connected', { value: false, writable: false, enumerable: true, configurable: true });
+    Object.defineProperty(kproxObject, 'connected',
+        {value: false, writable: false, enumerable: true, configurable: true});
 
     // kprox.docs
     Object.defineProperty(kproxObject, 'docs', { get: function () {
@@ -1560,7 +1579,8 @@ KProx = function (server, card, fnReady) {
                 delete kproxObject[p];
             }
         }
-        Object.defineProperty(kproxObject, 'ready', { value: false, writable: false, enumerable: true, configurable: true });
+        Object.defineProperty(kproxObject, 'ready',
+            { value: false, writable: false, enumerable: true, configurable: true });
     }
 
     //=========================================================================
@@ -1695,40 +1715,49 @@ kproxui = (function () {// Reference to model create with kprox.newDocument()
     // Constructor
     //==================================================================================
 
-    //TODO: gestionar la cadena de conexión como opcion
-    kprox = new KProx(null, navigator.userAgent);
-    kprox.on('connect', function () {
-       document.querySelector('#kprox-over').style.display = 'none';
-    });
-    kprox.on('disconnect', function () {
-        document.querySelector('#kprox-over').style.display = 'block';
-    });
-    //TODO: gestonar el nombre del documento con www y sin www así como http y https
-    model = kprox.newDocument(document.location.href);
-
-    model.on('lock', function (key, card) {
-        var element = getElement(key);
-        userMark.add(element, 'other');
-        element.setAttribute('disabled', 'disabled');
-    });
-    model.on('unlock', function (key, card) {
-        var element = getElement(key);
-        userMark.remove(element);
-        element.removeAttribute('disabled');
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
 
-        dom.append(document.body, '<div id="kprox-over" kprox-config="ignore" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(145, 145, 145, 0.50) url(data:image/gif;base64,' +
-            'R0lGODlhEAALAPQAAP///wAAANra2tDQ0Orq6gYGBgAAAC4uLoKCgmBgYLq6uiIiIkpKSoqKimRkZL6+viYmJgQEBE5OTubm5tjY2PT09Dg4ONzc3PLy8ra2tqCgoMrKyu7u7gAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hp' +
-            'DcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCwAAACwAAAAAEAALAAAFLSAgjmRpnqSgCuLKAq5AEIM4zDVw03ve27ifDgfkEYe04kDIDC5zrtYKRa2WQgAh+QQJCwAAACwAAAAAEAALAAAFJGBhGAVgnqhpHIeRvsDawqns0q' +
-            'eN5+y967tYLyicBYE7EYkYAgAh+QQJCwAAACwAAAAAEAALAAAFNiAgjothLOOIJAkiGgxjpGKiKMkbz7SN6zIawJcDwIK9W/HISxGBzdHTuBNOmcJVCyoUlk7CEAAh+QQJCwAAACwAAAAAEAALAAAFNSAgjqQIRRFUAo3jNGIkSdHqP' +
-            'I8Tz3V55zuaDacDyIQ+YrBH+hWPzJFzOQQaeavWi7oqnVIhACH5BAkLAAAALAAAAAAQAAsAAAUyICCOZGme1rJY5kRRk7hI0mJSVUXJtF3iOl7tltsBZsNfUegjAY3I5sgFY55KqdX1GgIAIfkECQsAAAAsAAAAABAACwAABTcgII5k' +
-            'aZ4kcV2EqLJipmnZhWGXaOOitm2aXQ4g7P2Ct2ER4AMul00kj5g0Al8tADY2y6C+4FIIACH5BAkLAAAALAAAAAAQAAsAAAUvICCOZGme5ERRk6iy7qpyHCVStA3gNa/7txxwlwv2isSacYUc+l4tADQGQ1mvpBAAIfkECQsAAAAsAAA' +
-            'AABAACwAABS8gII5kaZ7kRFGTqLLuqnIcJVK0DeA1r/u3HHCXC/aKxJpxhRz6Xi0ANAZDWa+kEAA7AAAAAAAAAAAA) center center no-repeat;">' +
+        var root = document.querySelector('[kprox-sync]');
+        if (root === null) {
+            return null;
+        }
+
+        //TODO: to manage the connect string as option
+        kprox = new KProx(null, navigator.userAgent);
+        kprox.on('connect', function () {
+            document.querySelector('#kprox-over').style.display = 'none';
+        });
+        kprox.on('disconnect', function () {
+            document.querySelector('#kprox-over').style.display = 'block';
+        });
+        //TODO: to manage the document name with www and without www
+        model = kprox.newDocument(document.location.href);
+
+        model.on('lock', function (key, card) {
+            var element = getElement(key);
+            userMark.add(element, 'other');
+            element.setAttribute('disabled', 'disabled');
+        });
+        model.on('unlock', function (key, card) {
+            var element = getElement(key);
+            userMark.remove(element);
+            element.removeAttribute('disabled');
+        });
+
+        dom.append(document.body, '<div id="kprox-over" kprox-config="ignore" style="position: fixed; top: 0; ' +
+            'left: 0; right: 0; bottom: 0; background: rgba(145, 145, 145, 0.50) url(data:image/gif;base64,' +
+            'R0lGODlhEAALAPQAAP///wAAANra2tDQ0Orq6gYGBgAAAC4uLoKCgmBgYLq6uiIiIkpKSoqKimRkZL6+viYmJgQEBE5OTubm5tjY2PT0' +
+            '9Dg4ONzc3PLy8ra2tqCgoMrKyu7u7gAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5m' +
+            'bwAh+QQJCwAAACwAAAAAEAALAAAFLSAgjmRpnqSgCuLKAq5AEIM4zDVw03ve27ifDgfkEYe04kDIDC5zrtYKRa2WQgAh+QQJCwAAACwA' +
+            'AAAAEAALAAAFJGBhGAVgnqhpHIeRvsDawqns0qeN5+y967tYLyicBYE7EYkYAgAh+QQJCwAAACwAAAAAEAALAAAFNiAgjothLOOIJAki' +
+            'GgxjpGKiKMkbz7SN6zIawJcDwIK9W/HISxGBzdHTuBNOmcJVCyoUlk7CEAAh+QQJCwAAACwAAAAAEAALAAAFNSAgjqQIRRFUAo3jNGIk' +
+            'SdHqPI8Tz3V55zuaDacDyIQ+YrBH+hWPzJFzOQQaeavWi7oqnVIhACH5BAkLAAAALAAAAAAQAAsAAAUyICCOZGme1rJY5kRRk7hI0mJS' +
+            'VUXJtF3iOl7tltsBZsNfUegjAY3I5sgFY55KqdX1GgIAIfkECQsAAAAsAAAAABAACwAABTcgII5kaZ4kcV2EqLJipmnZhWGXaOOitm2a' +
+            'XQ4g7P2Ct2ER4AMul00kj5g0Al8tADY2y6C+4FIIACH5BAkLAAAALAAAAAAQAAsAAAUvICCOZGme5ERRk6iy7qpyHCVStA3gNa/7txxw' +
+            'lwv2isSacYUc+l4tADQGQ1mvpBAAIfkECQsAAAAsAAAAABAACwAABS8gII5kaZ7kRFGTqLLuqnIcJVK0DeA1r/u3HHCXC/aKxJpxhRz6' +
+            'Xi0ANAZDWa+kEAA7AAAAAAAAAAAA) center center no-repeat;">' +
             '</div>');
 
-        var root = document.querySelector('[kprox-sync]');
         if (root.getAttribute('kprox-sync').toLowerCase() === 'dom') {
             dom.treeEach(root, domElement);
             model.init(initialData);
@@ -1736,7 +1765,9 @@ kproxui = (function () {// Reference to model create with kprox.newDocument()
                 if (event.extra.remote) {
                     var id = event.key.split('.')[0];
                     var attribute = event.key.split('.')[1];
-                    var element = document.querySelector('[kprox-model="'+ id +'"]') || document.querySelector('[id='+ id +']') || document.querySelector('[name='+ id +']');
+                    var element =   document.querySelector('[kprox-model="'+ id +'"]') ||
+                                    document.querySelector('[id='+ id +']')  ||
+                                    document.querySelector('[name='+ id +']');
                     element.setAttribute(attribute, event.lst);
                 }
             });
@@ -1746,21 +1777,21 @@ kproxui = (function () {// Reference to model create with kprox.newDocument()
             model.on('change', function (event) {
                 dom.prepend(document.getElementById('log'), JSON.stringify(event, null, '<br/>'));
                 if (!event.extra.userEvent) {
-                    var element = document.querySelector('[kprox-model="'+ event.key  +'"]') || document.querySelector('[id='+ event.key  +']') || document.querySelector('[name='+ event.key  +']');
-                    //TODO: Revisar la gestión de nombres especiales con puntos o con []
+                    var element =   document.querySelector('[kprox-model="'+ event.key  +'"]') ||
+                                    document.querySelector('[id='+ event.key  +']') ||
+                                    document.querySelector('[name='+ event.key  +']');
                     if (element) {
                         if ((dom.val(element) || '').toString() !== event.lst.toString()) {
                             dom.val(element, event.lst);
                         }
-    //                } else if (event.key.match(/\[/) === null) {
-    //                    element = document.querySelector('[id='+ event.key  +']');
-    //                    if (/* !dom.val(element) || */ dom.val(element).toString() !== event.lst.toString()) {
-    //                        dom.val(element, event.lst);
-    //                    }
                     } else {
                         var key = event.key.replace(/\]|\"|\'/g,'').split(/\[|\./)[0];
-                        element = document.querySelector('[kprox-model="'+ key  +'"]') || document.querySelector('[id='+ key + ']')  || document.querySelector('[name='+ key + ']');
-                        if (element.multiple && (dom.val(element) || '').toString() !== obj.getDepth(this, key).toString()) {
+                        element =   document.querySelector('[kprox-model="'+ key  +'"]') ||
+                                    document.querySelector('[id='+ key + ']')  ||
+                                    document.querySelector('[name='+ key + ']');
+                        if (element.multiple &&
+                            (dom.val(element) || '').toString() !== obj.getDepth(this, key).toString())
+                        {
                             dom.val(element, obj.getDepth(this, key));
                         }
                     }
