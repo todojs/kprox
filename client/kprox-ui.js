@@ -893,8 +893,10 @@ var obj = (function() {
      * @param {string} path
      */
     function getDepth(obj, path) {
-        return path.replace(/^\[|\]|\"|\'/g,'').split(/\[|\./).reduce(function(a,b) {
-            return a[b];
+        console.dir(obj);
+        console.dir(path);
+        return path.replace(/^\[|\]|\"|"/g,'').split(/\[|\./).reduce(function(a,b) {
+            return a || a[b];
         }, obj);
     }
 
@@ -1182,22 +1184,6 @@ function Scope(initialData) {
 }
 
 
-/**
- * property:
- * - {boolean} ready (readonly)
- * - {boolean} connected (readonly)
- * methods:
- * - on()
- * - off()
- * - fire()
- * - newDocument()
- * - newKProx()
- * events:
- * - ready          - parameters: kproxObject
- * - connect        -
- * - disconnect     -
- * - newDocument    -
- */
 
 KProx = function (server, card, fnReady) {
 

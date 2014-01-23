@@ -85,10 +85,10 @@ function setDepth(origin, path, value) {
     if (!path) {
         return;
     }
-    var tags = path.replace(/^\[|\]|\"|"/g,'').split(/\[|\./),
+    var tags = path.replace(/^\[|\]|\"|\'/g,'').split(/\[|\./),
         len = tags.length - 1;
     for (var i = 0; i < len; i++) {
-        origin = origin[tags[i]] = {};
+        origin = origin[tags[i]] = origin[tags[i]] || {};
     }
     origin[tags[len]] = value;
     return origin[tags[len]];
@@ -101,8 +101,9 @@ function setDepth(origin, path, value) {
  * @param {string} path
  */
 function getDepth(obj, path) {
+    console.dir(database);
     return path.replace(/^\[|\]|\"|"/g,'').split(/\[|\./).reduce(function(a,b) {
-        return a[b];
+        return a || a[b];
     }, obj);
 }
 /**
