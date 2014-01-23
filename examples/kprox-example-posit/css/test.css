@@ -1,0 +1,20 @@
+body { font-family: 'Philosopher', sans-serif; font-size: 15px; margin: 0px; padding: 0px;}
+h1 { position: absolute; top: 0px; left: 10px; font-size: 24px; font-style: italic; line-height: 14px;}
+
+.posit { position: absolute; top: 10px; left: 10px; font-family: 'Russo One', cursiva; font-size: 15px;
+    border: 1px solid #c0c0c0; width: 100px; height: 100px; background: lightyellow; text-align: center; z-index: 200; }
+
+.posit.lock { background: lightsalmon; }
+
+#title {  position: absolute; top: 7px; left: 368px; width: 490px; height: 30px; background: #F0F0F0; }
+
+#toolbar { position: absolute; top: 47px; left: 10px; width:   34px; height: 600px; background: #F6F6F6; }
+#toolbar button { margin-left: 4px; margin-top: 4px; width: 26px; height: 26px;}
+#cmdNew {background: url(./posit.png) center center no-repeat;}
+
+#DocName, #DocAuthor { font-size: 13px; height:  12px; width: 225px; margin: 4px; padding: 5px; float: left;
+    background: #FFF; overflow: hidden; white-space: nowrap; }
+#name, #author, #team { font-weight: bold; font-size: 13px; }
+
+#canvas { position: absolute; top:   47px; left: 56px; width: 800px; height: 600px; border: 2px solid #555;  }
+

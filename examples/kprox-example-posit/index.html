@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>KPROX example POSIT</title>
+    <link type="text/css" rel="stylesheet" href="./css/test.css" />
+    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/overcast/jquery-ui.css" />
+    <link type="text/css" rel="stylesheet"
+          href='http://fonts.googleapis.com/css?family=Philosopher:400,700,400italic,700italic' />
+    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/overcast/jquery-ui.css" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="/src/socket.io/socket.io.min.js"></script>
+    <script type="text/javascript" src="/src/kprox.js"></script>
+    <script type="text/javascript">
+
+        function AddPosit(id, top, left) {
+			var $new = $('<div id="' + id + '" tabindex="' + (++nTabIndex) + '" class="posit" style="top: ' + top + 'px; left: ' + left + 'px;"></div>')
+				.appendTo($canvas)
+				.draggable({
+			    	start: function(event, ui) {
+                        if (!kproxPosit.isLockByMe(event.target.id)) {
+                            event.preventDefault();
+                            return false;
+                        } else {
+                            $(this).focus();
+                            return true;
+                        }
+					},
+			    	drag: function(event, ui) {
+                        kproxPosit(function(data) {
+                            data[event.target.id] = ui.position;
+                        });
+			    	},
+			    	stop: function(event, ui) {
+                        kproxPosit(function(data) {
+                            data[event.target.id] = ui.position;
+                        });
+					},
+					containment: $canvas,
+					stack: '.posit'
+			    })
+			    .on('click', function() {
+			    	$(this).focus();
+			    })
+			    .on('focusin', function(event) {
+                    kproxPosit.lock(event.target.id)
+			    })
+			    .on('focusout', function(event) {
+                    kproxPosit.unlock(event.target.id)
+			    });
+		}
+
+		var $canvas = null;
+        var nTabIndex = 10;
+        var kprox = new KProx(null, {name: user});
+        var kproxPosit = null;
+        var user = 'user_' + Math.floor(Math.random()*1e+9|0);
+		$(function () {
+
+			$canvas = $('#canvas');
+
+    		$( "#toolbar button" ).button({text: false});
+
+    		$('#cmdNew').on('click', function() {
+                kproxPosit(function(data) {
+                    var id = 'posit_' + Math.floor(Math.random()*1e+9|0);
+                    data[id] = {top: 10, left: 10};
+                });
+    		});
+
+            kproxPosit = kprox.newDocument('posit', {});
+
+            kproxPosit.on('add', function(event) {
+                AddPosit(event.key, event.lst.top, event.lst.left);
+            });
+            kproxPosit.on('edt', function(event) {
+                if (event.extra.remote) {
+                    var id = event.key.split('.')[0];
+                    $('#' + id).css(this[id]);
+                }
+            });
+            kproxPosit.on('lock', function(key) {
+                $('#' + key).addClass('lock');
+            });
+            kproxPosit.on('unlock', function(key) {
+                $('#' + key).removeClass('lock');
+            });
+    	});
+
+    </script>
+</head>
+<body>
+	<h1>KPROX basic posit whiteboard</h1>
+    <div id="toolbar" class="ui-widget-content ui-corner-all">
+		<button id="cmdNew"></button>
+    </div>
+    <div id="title" class="ui-widget-content ui-corner-all">
+    	<div id="DocName">Document: <span id="name">Test de diseño</span></div>
+    	<div id="DocAuthor">Author: <span id="author">Equipo A</span></div>
+    </div>
+    <div id="canvas">
+    </div>
+ </body>
+</html>
